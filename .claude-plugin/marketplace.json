@@ -10,7 +10,7 @@
     {
       "name": "claude-remote",
       "description": "SSH-based remote handoff for Claude Code sessions. Upload workspace files, start Claude Code on a remote server, attach to running sessions, and pull artifacts back locally.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "tatsu-t",
         "email": "tatsu@tatsut.jp"
@@ -27,5 +27,5 @@
       ]
     }
   ],
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

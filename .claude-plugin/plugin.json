@@ -1,6 +1,6 @@
 {
   "name": "claude-remote",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Hand off local Claude Code sessions to a remote server via SSH",
   "author": {
     "name": "tatsu-t",

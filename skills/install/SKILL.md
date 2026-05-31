@@ -1,5 +1,5 @@
 ---
-name: setup
+name: install
 description: Install and configure the claude-remote CLI for SSH-based remote handoff
 ---
 
@@ -8,7 +8,7 @@ Build and install the `claude-remote` binary from source, then guide the user th
 </Purpose>
 
 <Use_When>
-- User runs `/setup` for the first time after installing this plugin
+- User runs `/install` or `/claude-remote:install` for the first time after adding this plugin
 - User says "install claude-remote", "setup remote", "configure remote server"
 - `claude-remote` binary is not found in PATH
 </Use_When>
@@ -16,8 +16,7 @@ Build and install the `claude-remote` binary from source, then guide the user th
 <Execution>
 1. Check if Go is installed: run `go version`. If not found, tell the user to install Go 1.22+ from https://go.dev/dl/ and stop.
 2. Check if `claude-remote` is already installed: run `claude-remote --version 2>/dev/null`. If found, skip to step 4.
-3. Build and install from the plugin directory:
-   - Identify the plugin installation directory (where this SKILL.md lives, two levels up)
+3. Build and install from source:
    - Run: `go install github.com/tatsu-t/claude-remote/cmd/claude-remote@latest`
    - Or if working from source: `cd <plugin-dir> && go build -o claude-remote ./cmd/claude-remote && mv claude-remote ~/bin/` (adjust PATH as needed)
 4. Check current config: run `claude-remote config show`
@@ -35,7 +34,7 @@ Build and install the `claude-remote` binary from source, then guide the user th
    docker compose up --build -d
    ssh-copy-id -i ~/.ssh/id_ed25519 -p 2222 claude-remote@localhost
    ```
-7. Confirm setup: run `claude-remote config show` and display the result.
+7. Confirm: run `claude-remote config show` and display the result.
 </Execution>
 
 <Notes>
