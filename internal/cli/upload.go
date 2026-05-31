@@ -169,6 +169,11 @@ func Upload(ctx context.Context, cfg *config.Config, opts UploadOptions) error {
 		case remote.MsgURL:
 			var p remote.URLPayload
 			if err := remote.DecodePayload(msg, &p); err == nil {
+				// Use the server-assigned ID (generated server-side for security).
+				if p.InstanceID != "" && p.InstanceID != inst.ID {
+					_ = store.Delete(inst.ID)
+					inst.ID = p.InstanceID
+				}
 				inst.RemoteURL = p.URL
 				inst.State = instance.StateRunning
 				_ = store.Save(inst)

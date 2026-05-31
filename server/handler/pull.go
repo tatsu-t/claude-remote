@@ -14,6 +14,13 @@ import (
 //  1. JSON line: PullMeta{"type":"ok",...} or PullMeta{"type":"error",...}
 //  2. If "ok": raw tar.gz bytes of the workspace directory
 func Pull(mgr *workspace.Manager, instanceID string, r io.Reader, w io.Writer) error {
+	if err := validateInstanceID(instanceID); err != nil {
+		return files.WritePullHeader(w, files.PullMeta{
+			Type:    "error",
+			Message: err.Error(),
+		})
+	}
+
 	inst, err := mgr.Get(instanceID)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -33,7 +40,6 @@ func Pull(mgr *workspace.Manager, instanceID string, r io.Reader, w io.Writer) e
 		return err
 	}
 
-	// Gather all files in the workspace and pack them.
 	workspaceDir := mgr.WorkspaceDir(inst.ID)
 	allFiles, err := gatherWorkspaceFiles(workspaceDir)
 	if err != nil {

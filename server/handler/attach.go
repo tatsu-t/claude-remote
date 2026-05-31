@@ -16,6 +16,10 @@ import (
 // For running instances it also replays the stored log (live attach via
 // process management is a future enhancement).
 func Attach(mgr *workspace.Manager, instanceID string, r io.Reader, w io.Writer) error {
+	if err := validateInstanceID(instanceID); err != nil {
+		return remote.WriteMessage(w, remote.MsgError, remote.ErrorPayload{Message: err.Error()})
+	}
+
 	inst, err := mgr.Get(instanceID)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -42,7 +46,6 @@ func Attach(mgr *workspace.Manager, instanceID string, r io.Reader, w io.Writer)
 	}
 
 	if inst.State == instance.StateRunning || inst.State == instance.StateAttached {
-		// Update state to reflect attach
 		_ = mgr.UpdateState(instanceID, instance.StateAttached)
 		_ = remote.WriteMessage(w, remote.MsgLog, remote.LogPayload{
 			Text: "Press Ctrl+C to stop watching. Remote work will continue.",

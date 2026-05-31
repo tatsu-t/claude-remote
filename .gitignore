@@ -27,3 +27,5 @@ deploy/authorized_keys
 # oh-my-claudecode runtime dirs (not part of the plugin)
 .omc/
 .remember/
+
+仕様書.md

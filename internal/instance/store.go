@@ -78,6 +78,24 @@ func (s *Store) Save(inst *Instance) error {
 	return os.WriteFile(s.path, data, 0600)
 }
 
+func (s *Store) Delete(id string) error {
+	instances, err := s.List()
+	if err != nil {
+		return err
+	}
+	filtered := instances[:0]
+	for _, inst := range instances {
+		if inst.ID != id {
+			filtered = append(filtered, inst)
+		}
+	}
+	data, err := json.MarshalIndent(filtered, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(s.path, data, 0600)
+}
+
 func (s *Store) ListByRepo(repoName string) ([]*Instance, error) {
 	all, err := s.List()
 	if err != nil {

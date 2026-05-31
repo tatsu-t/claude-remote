@@ -16,8 +16,10 @@ import (
 
 // Upload handles the upload command from a client:
 //  1. Reads the JSON header line (UploadMeta) from r
-//  2. Reads the tar.gz payload (rest of r) and extracts it to workspace/
-//  3. Starts claude --server-mode and streams its output as JSON Lines to w
+//  2. Validates all client-supplied metadata fields
+//  3. Generates a server-side instance ID (never trusts the client's ID)
+//  4. Reads the tar.gz payload and extracts it to workspace/
+//  5. Starts claude --server-mode and streams its output as JSON Lines to w
 func Upload(mgr *workspace.Manager, r io.Reader, w io.Writer) error {
 	br := bufio.NewReader(r)
 
@@ -27,8 +29,25 @@ func Upload(mgr *workspace.Manager, r io.Reader, w io.Writer) error {
 		return err
 	}
 
+	// Validate all client-supplied fields used in file paths or stored metadata.
+	if err := validateInstanceName(meta.InstanceName); err != nil {
+		_ = remote.WriteMessage(w, remote.MsgError, remote.ErrorPayload{Message: err.Error()})
+		return err
+	}
+	if err := validateRepoName(meta.RepoName); err != nil {
+		_ = remote.WriteMessage(w, remote.MsgError, remote.ErrorPayload{Message: err.Error()})
+		return err
+	}
+	if err := validateBranch(meta.Branch); err != nil {
+		_ = remote.WriteMessage(w, remote.MsgError, remote.ErrorPayload{Message: err.Error()})
+		return err
+	}
+
+	// Generate the instance ID server-side; never use the client-supplied ID in paths.
+	serverID := serverGenerateID()
+
 	inst := &instance.Instance{
-		ID:        meta.InstanceID,
+		ID:        serverID,
 		Name:      meta.InstanceName,
 		RepoName:  meta.RepoName,
 		Branch:    meta.Branch,
