@@ -17,8 +17,11 @@ const ALLOWED = [
   /^go version$/,
   // go install of this specific module (optional @version tag)
   /^go install github\.com\/tatsu-t\/claude-remote\/cmd\/claude-remote(@[\w.\-/]+)?$/,
+  // which claude-remote (binary detection)
+  /^which claude-remote$/,
   // claude-remote with a finite set of known safe subcommands / flags
-  /^claude-remote (upload|attach|pull|config|--version|--help)([ \t][\w.\-=/:@]+)*$/,
+  /^claude-remote (upload|attach|pull|--version|--help)$/,
+  /^claude-remote config (show|set)( [\w.\-/]+)*$/,
   // install.sh inside the plugin directory (absolute path, no traversal)
   /^[^\0]*claude-remote[/\\]install\.sh$/,
 ];

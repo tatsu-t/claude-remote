@@ -10,9 +10,9 @@ If Go is not installed, tell the user to install Go 1.22+ from https://go.dev/dl
 
 ## Step 2: Build & install binary
 
-Ask the user to run: `! claude-remote --version`
+Ask the user to run: `! which claude-remote`
 
-If the command is not found:
+If the command is not found (empty output or "not found"):
 
 If NOT_FOUND, run:
 ```
