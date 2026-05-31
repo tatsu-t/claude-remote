@@ -105,6 +105,9 @@ func Upload(ctx context.Context, cfg *config.Config, opts UploadOptions) error {
 	fmt.Println()
 
 	// Connect and upload
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	client, err := remote.NewClient(remote.Config{
 		Host:    cfg.Server.Host,
 		Port:    cfg.Server.Port,
@@ -184,6 +187,21 @@ func Upload(ctx context.Context, cfg *config.Config, opts UploadOptions) error {
 				fmt.Printf("- Remote Control: %s\n\n", p.URL)
 				fmt.Println("Attaching to live output...")
 				fmt.Println("Press Ctrl+C to stop watching. Remote work will continue.")
+			}
+		case remote.MsgPort:
+			var p remote.PortPayload
+			if err := remote.DecodePayload(msg, &p); err == nil && p.RemotePort > 0 {
+				localPort, err := client.ForwardPort(ctx, p.RemotePort, p.RemotePort)
+				if err != nil {
+					// Fallback: try any free port
+					localPort, err = client.ForwardPort(ctx, p.RemotePort, 0)
+				}
+				if err == nil {
+					fmt.Printf("SSH tunnel: localhost:%d → remote:%d (Claude Code CLI sync)\n",
+						localPort, p.RemotePort)
+				} else {
+					fmt.Fprintf(os.Stderr, "Warning: port forward failed: %v\n", err)
+				}
 			}
 		case remote.MsgLog:
 			var p remote.LogPayload

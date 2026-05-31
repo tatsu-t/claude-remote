@@ -12,6 +12,7 @@ type MessageType string
 const (
 	MsgProgress MessageType = "progress"
 	MsgURL      MessageType = "url"
+	MsgPort     MessageType = "port"
 	MsgLog      MessageType = "log"
 	MsgError    MessageType = "error"
 	MsgDone     MessageType = "done"
@@ -34,6 +35,14 @@ type URLPayload struct {
 	InstanceID string `json:"instance_id"`
 }
 
+// PortPayload carries the remote local port for SSH port forwarding.
+// RemotePort is the port on the server; LocalPort is filled in by the client
+// after it sets up the tunnel.
+type PortPayload struct {
+	RemotePort int `json:"remote_port"`
+	LocalPort  int `json:"local_port,omitempty"`
+}
+
 type LogPayload struct {
 	Text string `json:"text"`
 }
@@ -43,7 +52,7 @@ type ErrorPayload struct {
 }
 
 // WriteMessage encodes msg as a JSON line to w.
-func WriteMessage(w io.Writer, msgType MessageType, payload interface{}) error {
+func WriteMessage(w io.Writer, msgType MessageType, payload any) error {
 	raw, err := json.Marshal(payload)
 	if err != nil {
 		return err
@@ -79,6 +88,6 @@ func ReadMessages(r io.Reader, handler func(Message) error) error {
 }
 
 // DecodePayload unmarshals msg.Payload into v.
-func DecodePayload(msg Message, v interface{}) error {
+func DecodePayload(msg Message, v any) error {
 	return json.Unmarshal(msg.Payload, v)
 }

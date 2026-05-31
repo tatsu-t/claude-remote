@@ -1,8 +1,10 @@
 package remote
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"path/filepath"
@@ -56,6 +58,46 @@ func (c *Client) Close() error {
 
 func (c *Client) NewSession() (*ssh.Session, error) {
 	return c.conn.NewSession()
+}
+
+// ForwardPort sets up a local TCP listener that forwards connections to
+// remotePort on the server through the existing SSH connection (local port
+// forward). Pass localPort=0 to let the OS pick a free port.
+// Returns the actual local port bound. The tunnel runs until ctx is cancelled
+// or the SSH connection is closed.
+func (c *Client) ForwardPort(ctx context.Context, remotePort, localPort int) (int, error) {
+	listener, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", localPort))
+	if err != nil {
+		return 0, fmt.Errorf("listen localhost:%d: %w", localPort, err)
+	}
+
+	actual := listener.Addr().(*net.TCPAddr).Port
+
+	go func() {
+		<-ctx.Done()
+		listener.Close()
+	}()
+
+	go func() {
+		for {
+			local, err := listener.Accept()
+			if err != nil {
+				return // listener was closed
+			}
+			go func(local net.Conn) {
+				defer local.Close()
+				remote, err := c.conn.Dial("tcp", fmt.Sprintf("localhost:%d", remotePort))
+				if err != nil {
+					return
+				}
+				defer remote.Close()
+				go io.Copy(remote, local)
+				io.Copy(local, remote)
+			}(local)
+		}
+	}()
+
+	return actual, nil
 }
 
 func loadSigner(keyPath string) (ssh.Signer, error) {

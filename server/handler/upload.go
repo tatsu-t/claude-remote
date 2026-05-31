@@ -87,6 +87,12 @@ func Upload(mgr *workspace.Manager, r io.Reader, w io.Writer) error {
 		})
 	}
 
+	if session.LocalPort > 0 {
+		_ = remote.WriteMessage(w, remote.MsgPort, remote.PortPayload{
+			RemotePort: session.LocalPort,
+		})
+	}
+
 	// Tee logs to artifacts/claude.log for future attach requests.
 	logPath := filepath.Join(mgr.ArtifactsDir(inst.ID), "claude.log")
 	logFile, logErr := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
