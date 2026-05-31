@@ -1,12 +1,18 @@
 Guide the user through interactive setup of claude-remote. Follow the steps below exactly.
 
+> Note: Claude Code auto mode blocks shell execution. When you need to run a command, show it to the user prefixed with `!` so they can paste it directly (e.g. `! go version`). Do not use the Bash tool directly.
+
 ## Step 1: Check Go
 
-Run `go version`. If Go is not installed, tell the user to install Go 1.22+ from https://go.dev/dl/ and stop.
+Ask the user to run: `! go version`
+
+If Go is not installed, tell the user to install Go 1.22+ from https://go.dev/dl/ and stop.
 
 ## Step 2: Build & install binary
 
-Check if `claude-remote` binary exists: run `claude-remote --version 2>/dev/null || echo NOT_FOUND`.
+Ask the user to run: `! claude-remote --version`
+
+If the command is not found:
 
 If NOT_FOUND, run:
 ```
