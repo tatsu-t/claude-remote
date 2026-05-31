@@ -1,0 +1,27 @@
+services:
+  claude-remote:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: claude-remote-server
+    restart: unless-stopped
+    ports:
+      - "2222:22"
+    volumes:
+      # Persist instance data across container restarts
+      - claude-remote-data:/var/lib/claude-remote
+      # Mount your authorized_keys here:
+      # - ./authorized_keys:/home/claude-remote/.ssh/authorized_keys:ro
+    environment:
+      - CLAUDE_REMOTE_DATA_DIR=/var/lib/claude-remote
+      # Claude API key needed for server-side operations
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "22"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  claude-remote-data:
+    driver: local

@@ -1,0 +1,25 @@
+Port 22
+Protocol 2
+
+# Host keys
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_rsa_key
+
+# Authentication
+PubkeyAuthentication yes
+PasswordAuthentication no
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+PermitRootLogin no
+
+# Allow only the claude-remote user
+AllowUsers claude-remote
+
+# Restrict what the user can do (no TTY, no forwarding)
+AllowTcpForwarding no
+X11Forwarding no
+PermitTTY no
+
+# Logging
+LogLevel INFO
+SyslogFacility AUTH

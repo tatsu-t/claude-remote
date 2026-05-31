@@ -1,0 +1,31 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "claude-remote",
+  "description": "Hand off local Claude Code sessions to a remote server via SSH. Upload your workspace, run Claude Code remotely, and pull results back.",
+  "owner": {
+    "name": "tatsu-t",
+    "email": "tatsu@tatsut.jp"
+  },
+  "plugins": [
+    {
+      "name": "claude-remote",
+      "description": "SSH-based remote handoff for Claude Code sessions. Upload workspace files, start Claude Code on a remote server, attach to running sessions, and pull artifacts back locally.",
+      "version": "0.1.0",
+      "author": {
+        "name": "tatsu-t",
+        "email": "tatsu@tatsut.jp"
+      },
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/tatsu-t/claude-remote",
+      "tags": [
+        "remote",
+        "ssh",
+        "handoff",
+        "upload",
+        "server"
+      ]
+    }
+  ],
+  "version": "0.1.0"
+}

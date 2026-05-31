@@ -1,0 +1,29 @@
+# Binaries
+claude-remote
+claude-remote-server
+*.exe
+
+# Build output
+/bin/
+
+# Go test cache
+*.test
+*.out
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local config (never commit secrets)
+deploy/.env
+deploy/authorized_keys
+
+# oh-my-claudecode runtime dirs (not part of the plugin)
+.omc/
+.remember/

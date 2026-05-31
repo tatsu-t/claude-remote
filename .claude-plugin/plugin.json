@@ -1,0 +1,20 @@
+{
+  "name": "claude-remote",
+  "version": "0.1.0",
+  "description": "Hand off local Claude Code sessions to a remote server via SSH",
+  "author": {
+    "name": "tatsu-t",
+    "email": "tatsu@tatsut.jp"
+  },
+  "repository": "https://github.com/tatsu-t/claude-remote",
+  "homepage": "https://github.com/tatsu-t/claude-remote",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "remote",
+    "ssh",
+    "handoff"
+  ],
+  "skills": "./skills/"
+}
